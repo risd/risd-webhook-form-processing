@@ -1,0 +1,12 @@
+[{
+  "first_name": "test-first-name-1",
+  "last_name": "test-last-name-1",
+  "email": "test-email-1@www.com",
+  "program_of_interest": "Graphic Design",
+  "country": "United States",
+  "receive_viewbook": true,
+  "street_address": "2 college st",
+  "city": "providence",
+  "state": "Rhode Island",
+  "postal_code": "02903"
+}]
