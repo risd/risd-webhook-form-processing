@@ -4,8 +4,8 @@
   "description": "Webhook form processing server.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node manual.js",
+    "test": "tape test/*.js",
+    "example": "node manual.js",
     "dev": "DEBUG=* ./bin/server"
   },
   "author": "",
