@@ -71,13 +71,13 @@ function Routes ( options ) {
         complete( new Error( 'Could not process request. Smells like a bot.' ) )
       }
       else {
-        complete( undefined, formData )
+        complete( null, formData )
       }
     }
 
     function transformForSlate ( formData, complete ) {
       debug( 'transform-for-slate' )
-      complete( undefined, { data: formData, origin: request._router.hostname } )  
+      complete( null, { data: formData, origin: request._router.hostname } )  
     }
   }
 
@@ -104,7 +104,7 @@ function Routes ( options ) {
       function handleEnd () {
         debug( 'form-data' )
         debug( formData )
-        complete( undefined, formData )
+        complete( null, formData )
       }
     }
   }
