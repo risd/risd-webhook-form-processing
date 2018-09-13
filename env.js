@@ -28,7 +28,7 @@ function Env ( options ) {
 
   var configuration = {
     server: {
-      port: environment.SERVER_PORT,
+      port: environment.PORT,
     },
     routes: {
       slate: {
