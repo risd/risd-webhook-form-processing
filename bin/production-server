@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+var env = require( '../env.js' )().asObject()
+var server = require( '../server.js' )
+var routes = require( '../routes.js' )( env.routes )
+var throng = require( 'throng' )
+
+throng( start )
+
+function start () {
+  server( Object.assign( { routes: routes }, env.server ) )  
+}
