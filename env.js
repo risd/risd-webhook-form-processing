@@ -16,6 +16,7 @@ function Env ( options ) {
   try {
     var environment = dotenv.load( Object.assign( defaultOptions, options ) ).required;
     var firebaseCert = require( './.env.firebase.json' )
+    environment.FIREBASE_CERT = JSON.stringify( firebaseCert )
   } catch ( error ) {
     // These are expected as process.env variables if there is no `.env` file
     debug( 'loading-from-process.env' )
@@ -24,8 +25,6 @@ function Env ( options ) {
   }
 
   debug( environment )
-
-  environment.FIREBASE_CERT = JSON.stringify( firebaseCert )
 
   var configuration = {
     server: {
@@ -48,6 +47,7 @@ function Env ( options ) {
   return {
     asObject: createConfiguration,
     asString: asString,
+    asStringArray: asStringArray,
   }
 
   function createConfiguration () {
@@ -60,5 +60,13 @@ function Env ( options ) {
       str = [ str, key, '=', environment[ key ], ' ' ].join( '' )
     }
     return str;
+  }
+
+  function asStringArray () {
+    var arr = [];
+    for ( var key in environment ) {
+      arr.push( [ key, '=', environment[ key ] ].join( '' ) )
+    }
+    return arr; 
   }
 }
