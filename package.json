@@ -4,7 +4,7 @@
   "description": "Webhook form processing server.",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "./bin/production-server",
     "test": "tape test/*.js",
     "example": "node manual.js",
     "dev": "DEBUG=* ./bin/server"
