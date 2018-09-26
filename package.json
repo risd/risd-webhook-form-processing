@@ -9,6 +9,9 @@
     "example": "node manual.js",
     "dev": "DEBUG=* ./bin/server"
   },
+  "bin": {
+    "gradstudy-slate-push": "./bin/gradstudy-slate-push"
+  },
   "engines": {
     "node": "6.12.3",
     "npm": "5.6.0"
