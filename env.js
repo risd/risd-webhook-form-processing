@@ -39,8 +39,8 @@ function Env ( options ) {
     clock: {
       gradstudy: {
         slate: {
-          host: environment.CLOCK_GRADSTUDY_HOST,
-          formatId: environment.CLOCK_GRADSTUDY_FORMATID,
+          host: environment.CLOCK_GRADSTUDY_SLATE_HOST,
+          formatId: environment.CLOCK_GRADSTUDY_SLATE_FORMATID,
           account: {
             user: environment.SLATE_ACCOUNT_USER,
             password: environment.SLATE_ACCOUNT_PASSWORD,
