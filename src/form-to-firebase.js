@@ -1,3 +1,4 @@
+var formValidateHoneyPot = require( './form-validation-honey-pot.js' )
 var debug = require( 'debug' )( 'form-to-firebase' )
 var parseForm = require( './form-parse.js' )
 var moment = require( 'moment-timezone' )
@@ -19,7 +20,10 @@ function FormToFirebase ( options ) {
    * @return {undefined}
    */
   return function handleProgramInterestForm ( request, response ) {
-    var pipeline = [ parseForm( request ) ]
+    var pipeline = [
+        parseForm( request ),
+        formValidateHoneyPot()
+      ]
       .concat( validationPipeline )
       .concat( [
         pushFirebase( {
