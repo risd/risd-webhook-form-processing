@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+var env = require( '../env.js' )().asObject()
+var firebaseToSlate = require( '../src/graduate-study-express-interest/clock-slate-push.js' )
+
+firebaseToSlate( env.clock.gradstudy, pushHandler )
+
+function pushHandler ( error ) {
+  if ( error ) console.log( error )
+  process.exit()
+}

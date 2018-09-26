@@ -9,8 +9,9 @@ module.exports = FirebaseForms;
  * @param {object} options.project     Name of the Firebase project
  * @param {object} options.credential  Object that represents Firebase project cert
  * @return {object} api                The interface into Firebase useful for saving and fetching form data
- * @return {object} api.saveFormSubmission    Save form submission
- * @return {object} api.fetchFormSubmissions  Fetch all submissions for a form
+ * @return {object} api.saveSubmission    Save form submission
+ * @return {object} api.fetchSubmissions  Fetch all submissions for a form
+ * @return {object} api.updateSubmissions  Update all submission keys with the given value
  */
 function FirebaseForms ( options ) {
   if ( ! ( this instanceof FirebaseForms ) ) return new FirebaseForms( options )
@@ -26,6 +27,7 @@ function FirebaseForms ( options ) {
   return {
     saveSubmission: saveFormSubmission,
     fetchSubmissions: fetchFormSubmissions,
+    updateSubmissions: updateFormSubmissions,
   }
 
   // site-name : string => ref : /bucket/{site-name}/{site-key}/dev/forms
@@ -82,9 +84,9 @@ function FirebaseForms ( options ) {
   // fetches from /bucket/{site-name}/{site-key}/dev/forms/{form-name}/submissions
   function fetchFormSubmissions ( options, complete ) {
     debug( 'fetch-form-submissions' )
+    debug( options )
     var siteName = options.siteName
     var formName = options.formName
-    var formData = options.formData
 
     async.waterfall( [
       getDataRefForSiteName.bind( null, siteName ),
@@ -106,6 +108,27 @@ function FirebaseForms ( options ) {
           subComplete( error )
         } )
     }
+  }
+
+  // updates /bucket/{site-name}/{site-key}/dev/forms/{form-name}/submissions
+  function updateFormSubmissions ( options, complete ) {
+    debug( 'update-form-submissions' )
+    var siteName = options.siteName
+    var formName = options.formName
+    var updateKeyValues = options.updateKeyValues
+
+    async.waterfall( [
+      getDataRefForSiteName.bind( null, siteName ),
+      updateFormSubmissionsWithDataRef
+    ], complete )
+
+    function updateFormSubmissionsWithDataRef ( siteDataRef, subComplete ) {
+      debug( 'updateKeyValues' )
+      debug( updateKeyValues )
+      siteDataRef.child( `${ formName }/submissions` )
+        .update( updateKeyValues, subComplete )
+    }
+
   }
 
   function escapeName ( siteName ) {
