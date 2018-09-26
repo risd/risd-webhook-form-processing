@@ -1,21 +1,23 @@
-var debug = require( 'debug' )( 'manual' )
+var debug = require( 'debug' )( 'slate-push' )
 var request = require( 'request' )
 
-var originHostMap = require( './origin-host-map.js' )
-
-module.exports = PushSlate;
+module.exports = SlatePush;
 
 /**
  * @param {object} options
- * @param {object} options.data
- * @param {string} options.origin
+ * @param {string} options.host
+ * @param {string} options.formatId
+ * @param {object} options.file
+ * @param {object} options.file.data
+ * @param {string} options.file.baseName
+ * @param {string} options.file.extension
  * @param {object} options.account
  * @param {string} options.account.user
  * @param {string} options.account.password
  * @param {Function} complete
  */
-function PushSlate ( options, complete ) {
-  if ( ! ( this instanceof PushSlate ) ) return new PushSlate( options, complete )
+function SlatePush ( options, complete ) {
+  if ( ! ( this instanceof SlatePush ) ) return new SlatePush( options, complete )
 
   var slateRequestOptions = makeSlateRequestOptions( options )
 
@@ -23,17 +25,14 @@ function PushSlate ( options, complete ) {
 }
 
 function makeSlateRequestOptions ( options ) {
-  var dataToPush = toBuffer( options.data );
-  var dataOrigin = options.origin;
-  var slateAccount = options.account;
   return {
     method: 'POST',
-    url: slateUrl( { origin: options.origin } ),
+    url: importLoadUrl( { host: options.host, formatId: options.formatId } ),
     headers: Object.assign(
-      basicAuthHeader( { username: slateAccount.user, password: slateAccount.password } ),
-      fileNameHeader( { baseFileName: 'graduate-study--program-interest', fileExtension: 'csv' } )
+      basicAuthHeader( { username: options.account.user, password: options.account.password } ),
+      fileNameHeader( { baseFileName: options.file.baseName, fileExtension: options.file.extension } )
     ),
-    body: dataToPush,
+    body: toBuffer( options.file.data ),
   }
 }
 
@@ -60,17 +59,12 @@ function requestHandler ( complete ) {
 
 /* helpers */
 
-function slateUrl ( options ) {
-  var dataOrigin = options.origin;
-
-  var formatId = "113efb49-5a30-4aba-a228-0b94d4a75eb2"
-  try {
-    var host = originHostMap[ dataOrigin ]
-  } catch ( error ) {
-    throw new Error( 'Origin must be defined within the slate URL mapping.' )
-  }
+function importLoadUrl ( options ) {
+  var host = options.host
+  var formatId = options.formatId
   
   var urlPath = "manage/service/import?cmd=load"
+
   return `${ host }/${ urlPath }&format=${ formatId }`
 }
 
@@ -91,10 +85,4 @@ function fileNameHeader ( options ) {
   var currentTime = new Date().getTime()
   var fileName = `${ baseFileName }--${ currentTime }.${ fileExtension }`
   return { 'Content-Disposition': `attachment; filename="${ fileName }"`  }
-}
-
-function sampleDataSource ( name ) {
-  var fs = require( 'fs' )
-  var datum = fs.readFileSync( `sample-data/${ name }` )
-  return datum
 }

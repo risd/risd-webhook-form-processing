@@ -4,8 +4,6 @@ var formidable = require( 'formidable' )
 var async = require( 'async' )
 
 var FirebaseDatabaseInterface = require( './firebase.js' )
-var originHostMap = require( './origin-host-map.js' )
-var pushSlate = require( './push-slate.js' )
 
 module.exports = Routes;
 
@@ -20,7 +18,7 @@ module.exports = Routes;
  */
 function Routes ( options ) {
   if ( ! ( this instanceof Routes ) ) return new Routes( options )
-debug( options )
+
   var firebaseDatabaseInterface = FirebaseDatabaseInterface( options.firebase )
   
   return {
@@ -101,7 +99,7 @@ debug( options )
           firebaseDatabaseInterface.saveFormSubmission( saveFormSubmissionOptions, complete )
         }
       }
-    } 
+    }
   }
 }
 
@@ -212,12 +210,5 @@ function validateProgramInterestForm () {
         delete dataToValidate[ dataKey ]
       }
     }
-  }
-}
-
-function prepForSlate ( origin ) {
-  function transformForSlate ( formData, complete ) {
-    debug( 'transform-for-slate' )
-    complete( null, { data: formData, origin: orign } )  
   }
 }

@@ -31,15 +31,25 @@ function Env ( options ) {
       port: environment.PORT,
     },
     routes: {
-      slate: {
-        account: {
-          user: environment.ROUTES_SLATE_ACCOUNT_USER,
-          password: environment.ROUTES_SLATE_ACCOUNT_PASSWORD,
-        },
-      },
       firebase: {
         project: environment.FIREBASE_PROJECT,
         credential: firebaseCert,
+      },
+    },
+    clock: {
+      gradstudy: {
+        slate: {
+          host: environment.CLOCK_GRADSTUDY_HOST,
+          formatId: environment.CLOCK_GRADSTUDY_FORMATID,
+          account: {
+            user: environment.SLATE_ACCOUNT_USER,
+            password: environment.SLATE_ACCOUNT_PASSWORD,
+          },
+        },
+        firebase: {
+          project: environment.FIREBASE_PROJECT,
+          credential: firebaseCert,
+        },
       },
     },
   }
