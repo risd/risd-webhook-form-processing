@@ -26,13 +26,6 @@ function ValidateProgramInterestForm () {
   ] )
 
   return function validateIncomingForm ( formData, complete ) {
-    debug( 'validate-form' )
-    if ( typeof formData !== 'object' ) return complete( new Error( 'Invalid data request.' ) )
-
-    // this field is hidden. if populated, the data is likely from a bot
-    if ( formData[ 'honey_pot' ] ) {
-      return complete( new Error( 'Could not process request. Smells like a bot.' ) )
-    }
 
     Object.keys( formData ).forEach( function removeEmptyKeys ( formKey ) {
       if ( formData[ formKey ] === '' ) delete formData[ formKey ]

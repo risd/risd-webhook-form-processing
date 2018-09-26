@@ -2,7 +2,7 @@ var debug = require( 'debug' )( 'firebase' )
 var firebase = require( 'firebase-admin' )
 var async = require( 'async' )
 
-module.exports = FirebaseDatabaseInterface;
+module.exports = FirebaseForms;
 
 /**
  * @param {object} options
@@ -12,8 +12,8 @@ module.exports = FirebaseDatabaseInterface;
  * @return {object} api.saveFormSubmission    Save form submission
  * @return {object} api.fetchFormSubmissions  Fetch all submissions for a form
  */
-function FirebaseDatabaseInterface ( options ) {
-  if ( ! ( this instanceof FirebaseDatabaseInterface ) ) return new FirebaseDatabaseInterface( options )
+function FirebaseForms ( options ) {
+  if ( ! ( this instanceof FirebaseForms ) ) return new FirebaseForms( options )
 
   firebase.initializeApp( {
     credential: firebase.credential.cert( options.credential ),
@@ -24,8 +24,8 @@ function FirebaseDatabaseInterface ( options ) {
   var siteNameToDataRef = {}
 
   return {
-    saveFormSubmission: saveFormSubmission,
-    fetchFormSubmissions: fetchFormSubmissions,
+    saveSubmission: saveFormSubmission,
+    fetchSubmissions: fetchFormSubmissions,
   }
 
   // site-name : string => ref : /bucket/{site-name}/{site-key}/dev/forms

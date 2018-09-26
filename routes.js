@@ -1,7 +1,7 @@
 var debug = require( 'debug' )( 'routes' )
 var async = require( 'async' )
 
-var FirebaseDatabaseInterface = require( './firebase.js' )
+var FirebaseForms = require( './src/firebase-forms.js' )
 var gradstudyProgramInterestForm = require( './src/graduate-study-express-interest/route-save-form.js' )
 
 
@@ -18,9 +18,9 @@ module.exports = Routes;
 function Routes ( options ) {
   if ( ! ( this instanceof Routes ) ) return new Routes( options )
 
-  var firebaseDatabaseInterface = FirebaseDatabaseInterface( options.firebase )
+  var firebaseForms = FirebaseForms( options.firebase )
   var gradstudyFormSave = gradstudyProgramInterestForm( {
-    saveFormSubmission: firebaseDatabaseInterface.saveFormSubmission,
+    saveFormSubmission: firebaseForms.saveSubmission,
   } )
   
   return {
