@@ -20,10 +20,8 @@ function SlatePush ( options, complete ) {
   if ( ! ( this instanceof SlatePush ) ) return new SlatePush( options, complete )
 
   var slateRequestOptions = makeSlateRequestOptions( options )
-  debug( 'slateRequestOptions' )
-  debug( options.file.data )
-  complete()
-  // request( slateRequestOptions, requestHandler( complete ) )
+
+  request( slateRequestOptions, requestHandler( complete ) )
 }
 
 function makeSlateRequestOptions ( options ) {

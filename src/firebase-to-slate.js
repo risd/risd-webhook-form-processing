@@ -2,6 +2,7 @@ var keyIsNotValue = require( './util/key-is-not-value.js' )
 var debug = require( 'debug' )( 'firebase-to-slate' )
 var FirebaseForms = require( './firebase-forms.js' )
 var slatePush = require( './slate-push.js' )
+var now = require( './util/now.js' )
 var async = require( 'async' )
 
 var IMPORTED = '_imported_into_slate'
@@ -36,6 +37,7 @@ function FirebaseToSlate ( options, complete ) {
   async.waterfall( pipeline, complete )
 
   function updateFirebaseSubmissions ( options ) {
+    var timestamp = now()
     return function ( submissions, complete ) {
       if ( submissions.length === 0 ) return complete()
       var updateOptions = Object.assign( {}, options, { updateKeyValues: submissions.reduce( markAsImported, {} ) } )
@@ -43,7 +45,7 @@ function FirebaseToSlate ( options, complete ) {
     }
 
     function markAsImported ( keyValueObject, submission ) {
-      keyValueObject[ `${ submission.key }/${ IMPORTED }` ] = true
+      keyValueObject[ `${ submission.key }/${ IMPORTED }` ] = timestamp;
       return keyValueObject
     }
   }
@@ -86,7 +88,9 @@ function importIntoSlate ( options ) {
 /* helpers */
 
 function hasNotBeenImported () {
-  return keyIsNotValue( IMPORTED, true )
+  return function isNotString ( obj ) {
+    return typeof obj[ IMPORTED ] !== 'string';
+  }
 }
 
 function pluck ( key ) {

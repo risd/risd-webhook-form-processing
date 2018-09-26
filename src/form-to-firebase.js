@@ -1,7 +1,7 @@
 var formValidateHoneyPot = require( './form-validation-honey-pot.js' )
 var debug = require( 'debug' )( 'form-to-firebase' )
 var parseForm = require( './form-parse.js' )
-var moment = require( 'moment-timezone' )
+var now = require( './util/now.js' )
 var async = require( 'async' )
 
 module.exports = FormToFirebase;
@@ -68,7 +68,7 @@ function FormToFirebase ( options ) {
           siteName: siteName,
           formName: formName,
           formData: Object.assign( {
-            _form_submission_time: moment().tz( 'America/New_York' ).format(),
+            _form_submission_time: now(),
             _form_submission_origin: origin,
           }, formData ),
         }
