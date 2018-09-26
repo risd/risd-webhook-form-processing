@@ -2,8 +2,6 @@ var debug = require( 'debug' )( 'server' )
 var url = require( 'url' )
 var http = require( 'http' )
 
-var originHostMap = require( './origin-host-map.js' )
-
 module.exports = Server;
 
 function Server ( options ) {
