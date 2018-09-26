@@ -17,7 +17,7 @@
     "email": "test-email-2@www.com",
     "program_of_interest": "Architecture",
     "country": "United States",
-    "receive_viewbook": true,
+    "receive_viewbook": false,
     "street_address": "3 college st",
     "city": "providence",
     "state": "Rhode Island",
