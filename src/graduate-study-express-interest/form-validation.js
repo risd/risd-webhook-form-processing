@@ -26,6 +26,8 @@ function ValidateProgramInterestForm () {
   ] )
 
   return function validateIncomingForm ( formData, complete ) {
+    debug( 'form to validate' )
+    debug( formData )
 
     Object.keys( formData ).forEach( function removeEmptyKeys ( formKey ) {
       if ( formData[ formKey ] === '' ) delete formData[ formKey ]

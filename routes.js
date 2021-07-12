@@ -3,7 +3,7 @@ var async = require( 'async' )
 
 var FirebaseForms = require( './src/firebase-forms.js' )
 var gradstudyProgramInterestForm = require( './src/graduate-study-express-interest/route-save-form.js' )
-
+var FirebaseUserRoutes = require( './src/firebase-user/routes.js' )
 
 module.exports = Routes;
 
@@ -22,6 +22,8 @@ function Routes ( options ) {
   var gradstudyFormSave = gradstudyProgramInterestForm( {
     saveFormSubmission: firebaseForms.saveSubmission,
   } )
+
+  var firebaseUserRoutes = FirebaseUserRoutes( options.firebase )
   
   return {
     'POST': {
@@ -33,6 +35,9 @@ function Routes ( options ) {
       },
       'localhost': {
         '/express-program-interest/': gradstudyFormSave,
+        '/firebase-user/create/': firebaseUserRoutes.create,
+        '/firebase-user/update/': firebaseUserRoutes.update,
+        '/firebase-user/delete/': firebaseUserRoutes.delete,
       },
     },
   }

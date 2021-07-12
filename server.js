@@ -33,8 +33,6 @@ function createServer ( options ) {
       try {
         var parsedUrl = url.parse( request.headers.referer )
         var hostname = parsedUrl.hostname
-        console.log( 'parsedUrl' )
-        console.log( parsedUrl )  
       } catch ( error ) {
         return errorResponse( 400 )
       }

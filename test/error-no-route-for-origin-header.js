@@ -18,14 +18,14 @@ test( 'error-no-origin-header-request', function ( t ) {
       headers: Object.assign(
         {},
         requestOptions.headers,
-        { 'Referer': undefined }
+        { 'Referer': `https://no-such-domain-in-routes.com/any-form/` }
       )
     }
   )
 
   request( requestOptions, function ( error, response ) {
     t.assert( error === null, "Error request completed without error." )
-    t.assert( response.statusCode === 400, "Error request procuded appropriate status code." )
+    t.assert( response.statusCode === 403, "Error request procuded appropriate status code." )
     server.close( function () {
       t.ok( true, 'server cloesd' )
     } )

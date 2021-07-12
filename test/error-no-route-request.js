@@ -1,22 +1,28 @@
 var test = require( 'tape' )
 var request = require( 'request' )
+var env = require( '../env.js' )()
+var configuration = env.asObject()
 var requestOptions = require( './request-options' )
 
 var env = require( '../env.js' )().asObject()
-var server = require( '../server.js' )
+var Server = require( '../server.js' )
 var routes = require( '../routes.js' )( env.routes )
-server( Object.assign( { routes: routes }, env.server ) )
 
 test( 'error-request', function ( t ) {
-  t.plan( 2 )
+  t.plan( 3 )
 
-  Object.assign( requestOptions, {
-    url: 'http://localhost:9000/no-such-route/'
+  var server = Server( Object.assign( { routes: routes }, env.server ) )
+
+  requestOptions = Object.assign( {}, requestOptions, {
+    url: `http://localhost:${ configuration.server.port }/no-such-route/`
   } )
 
   request( requestOptions, function ( error, response ) {
-    console.log( error )
     t.assert( error === null, "Error request completed without error." )
     t.assert( response.statusCode === 403, "Error request procuded appropriate status code." )
+
+    server.close( function () {
+      t.ok( true, 'server cloesd' )
+    } )
   } )
 } )

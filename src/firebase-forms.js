@@ -16,10 +16,12 @@ module.exports = FirebaseForms;
 function FirebaseForms ( options ) {
   if ( ! ( this instanceof FirebaseForms ) ) return new FirebaseForms( options )
 
-  firebase.initializeApp( {
-    credential: firebase.credential.cert( options.credential ),
-    databaseURL: `https:://${ options.project }.firebaseio.com`,
-  } )
+  if ( firebase.apps.length === 0 ) {
+    firebase.initializeApp( {
+      credential: firebase.credential.cert( options.credential ),
+      databaseURL: `https:://${ options.project }.firebaseio.com`,
+    } )
+  }
   
   // store site references mapped by the name of the site
   var siteNameToDataRef = {}
