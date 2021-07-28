@@ -1,5 +1,6 @@
 var debug = require( 'debug' )( 'env' )
 var dotenv = require( 'dotenv-safe' )
+var path = require( 'path' )
 
 module.exports = Env;
 
@@ -15,7 +16,12 @@ function Env ( options ) {
   
   try {
     var environment = dotenv.load( Object.assign( defaultOptions, options ) ).required;
-    var firebaseCert = require( './.env.firebase.json' )
+    var firebaseCert = require(
+      path.join(
+        __dirname,
+        environment.FIREBASE_CERT_PATH
+      )
+    )
     environment.FIREBASE_CERT = JSON.stringify( firebaseCert )
   } catch ( error ) {
     // These are expected as process.env variables if there is no `.env` file
@@ -34,6 +40,7 @@ function Env ( options ) {
       firebase: {
         project: environment.FIREBASE_PROJECT,
         credential: firebaseCert,
+        apiKey: environment.FIREBASE_WEB_API_KEY,
       },
     },
     clock: {

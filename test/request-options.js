@@ -1,54 +1,35 @@
-var requestData = `------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="first_name"
+var env = require( '../env.js' )().asObject()
 
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="last_name"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="email"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="program_of_interest"
-
-graphic_design
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="country"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="street_address"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="city"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="state"
-
-washington
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="postal_code"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY
-Content-Disposition: form-data; name="honey_pot"
-
-
-------WebKitFormBoundary6PamrbinRfQhMgIY--`
-
-var options = {
-  method: 'POST',
-  url: 'http://localhost:9000/express-program-interest/',
-  headers: {
-    'Content-Type': 'multipart/form-data; ; boundary=----WebKitFormBoundary6PamrbinRfQhMgIY',
-    'Content-Length': Buffer.byteLength( requestData ),
-    'Referer': 'http://localhost:8000/program-interest-form/',
-  },
-  body: requestData,
+module.exports = {
+  submitForm: configureFormSubmit,
 }
 
-module.exports = Object.assign( {}, options )
+// { path, formFields: [ { key, value } ], referer }
+//   => { method, url, headers: { 'Content-Type', 'Content-Length', Referer } }
+function configureFormSubmit ( options ) {
+  var boundary = '--boundary'
+  var path = options.path
+  var formData = options.formFields
+    .map( keyValueToFormData )
+    .concat( [ '--' + boundary + '--\r\n' ] )
+    .join( '' )
+  var referer = options.referer || `http://localhost:${ env.server.port }/source-of-request/`
+
+  return  {
+    method: 'POST',
+    url: `http://localhost:${ env.server.port }${ path }`,
+    headers: {
+      'Content-Type': `multipart/form-data; boundary=${ boundary }`,
+      'Content-Length': formData.length,
+      'Referer': referer,
+    },
+    body: formData,
+  }
+
+  function keyValueToFormData ( keyValue ) {
+    return '--' + boundary + '\r\n' +
+      'Content-Disposition: form-data; name="' + keyValue.key + '"\r\n' +
+      '\r\n' +
+      keyValue.value + '\r\n'
+  }
+}

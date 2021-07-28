@@ -1,5 +1,5 @@
-var debug = require( 'debug' )( 'firebase' )
-var firebase = require( 'firebase-admin' )
+var debug = require( 'debug' )( 'firebase-forms' )
+var admin = require( 'firebase-admin' )
 var async = require( 'async' )
 
 module.exports = FirebaseForms;
@@ -15,11 +15,15 @@ module.exports = FirebaseForms;
  */
 function FirebaseForms ( options ) {
   if ( ! ( this instanceof FirebaseForms ) ) return new FirebaseForms( options )
+    debug( options.credential )
 
-  firebase.initializeApp( {
-    credential: firebase.credential.cert( options.credential ),
-    databaseURL: `https:://${ options.project }.firebaseio.com`,
-  } )
+  if ( admin.apps.length === 0 ) {
+    admin.initializeApp( {
+      projectId: options.project,
+      credential: admin.credential.cert( options.credential ),
+      databaseURL: `https://${ options.project }.firebaseio.com`,
+    } )
+  }
   
   // store site references mapped by the name of the site
   var siteNameToDataRef = {}
@@ -37,7 +41,7 @@ function FirebaseForms ( options ) {
     debug( escapeName( siteName ) )
     if ( siteNameToDataRef.hasOwnProperty( siteName ) ) return complete( null, siteNameToDataRef[ siteName ] )
 
-    var keyRef = firebase.database().ref( `management/sites/${ escapeName( siteName ) }/key` )
+    var keyRef = admin.database().ref( `management/sites/${ escapeName( siteName ) }/key` )
     debug( 'key ref' )
     debug( keyRef.toString() )
     keyRef.once( 'value', function onSiteKeySnapshot ( keySnapshot ) {
@@ -45,7 +49,7 @@ function FirebaseForms ( options ) {
         debug( 'key-value' )
         debug( keyValue )
         if ( ! keyValue ) return complete( new Error( 'invalid key' ) )
-        var siteDataRef = firebase.database().ref( `/buckets/${ escapeName( siteName ) }/${ keyValue }/dev/forms` )
+        var siteDataRef = admin.database().ref( `/buckets/${ escapeName( siteName ) }/${ keyValue }/dev/forms` )
         siteNameToDataRef[ siteName ] = siteDataRef;
         complete( null, siteDataRef )
       },

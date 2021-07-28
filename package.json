@@ -1,6 +1,6 @@
 {
   "name": "risd-webhook-form-processing",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Webhook form processing server.",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "gradstudy-slate-push": "./bin/gradstudy-slate-push"
   },
   "engines": {
-    "node": "6.12.3",
-    "npm": "5.6.0"
+    "node": "16.4.2",
+    "npm": "7.18.0"
   },
   "author": "",
   "license": "ISC",
@@ -22,12 +22,13 @@
     "async": "^2.6.1",
     "debug": "^3.1.0",
     "dotenv-safe": "^6.0.0",
-    "firebase-admin": "^6.0.0",
+    "firebase": "^8.7.1",
+    "firebase-admin": "^9.10.0",
     "formidable": "^1.2.1",
     "moment-timezone": "^0.5.21",
-    "throng": "^4.0.0"
+    "throng": "^5.0.0"
   },
   "devDependencies": {
-    "tape": "^4.9.1"
+    "tape": "^5.2.2"
   }
 }

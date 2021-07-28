@@ -17,10 +17,13 @@ function FormParse ( request ) {
     form.parse( request )
 
     function handleField ( field, value ) {
+      debug( `${ field } : ${ value }` )
       formData[ field ] = value
     }
 
     function handleError ( error ) {
+      debug( 'error' )
+      debug( error )
       complete( error )
     }
 
