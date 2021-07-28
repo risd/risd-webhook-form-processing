@@ -1,5 +1,6 @@
 var test = require( 'tape' )
 var firebase = require( 'firebase-admin' )
+var client = require( 'firebase' )
 
 test( 'close-firebase', function ( t ) {
   t.plan( 1 )
@@ -8,13 +9,8 @@ test( 'close-firebase', function ( t ) {
     t.ok( true, 'No firebase to close' )
   }
   else {
-    var closers = firebase.apps.map( function ( app ) {
-      return new Promise( function ( resolve, reject ) {
-        app.delete()
-          .then( resolve )
-          .catch( reject )
-      } )
-    } )
+    var closers = firebase.apps.map( deleteAppPromise )
+      .concat( client.apps.map( deleteAppPromise ) )
 
     Promise.all( closers )
       .then( function () {
@@ -25,3 +21,11 @@ test( 'close-firebase', function ( t ) {
       } )
   }
 } )
+
+function deleteAppPromise ( app ) {
+  return new Promise( function ( resolve, reject ) {
+    app.delete()
+      .then( resolve )
+      .catch( reject )
+  } )
+}

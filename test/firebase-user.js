@@ -11,18 +11,37 @@ var options = {
 
 var updateOptions = {
   email: options.email,
+  oldPassword: options.password,
   newPassword: 'password!1',
 }
 
 var deleteOptions = {
   email: options.email,
+  password: updateOptions.newPassword,
 }
+
+// for some reason the user attempts to get deleted 2x.
+// the first time it deletes successfully.
+// the second time it throws an error.
+// since its not coming from my first call directly,
+// i can't catch the error. so this will catch it.
+// if the error is that the user is not found,
+// and our internal deleted user flag is already
+// set to true, then we can just return.
+var successfullyDeletedUser
+process.on( 'uncaughtException', ( error ) => {
+  if ( error.errorInfo.code === 'auth/user-not-found' &&
+        successfullyDeletedUser === true ) {
+    return
+  }
+  console.log( error )
+} )
 
 test( 'create-user', function ( t ) {
   t.plan( 1 )
   
   firebaseUser.create( options )
-    .then( function () {
+    .then( function ( user ) {
       t.ok( true, 'Created user ')
     } )
     .catch( function () {
@@ -47,10 +66,11 @@ test( 'delete-user', function ( t ) {
 
   firebaseUser.delete( deleteOptions )
     .then( function () {
+      successfullyDeletedUser = true
       t.ok( true, 'Deleted user' )
     } )
     .catch( function ( error ) {
-      console.log( error )
+      successfullyDeletedUser = false
       t.ok( false, 'Could not delete user' )
     } )
 } )

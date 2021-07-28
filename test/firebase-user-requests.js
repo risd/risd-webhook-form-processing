@@ -5,36 +5,9 @@ var env = require( '../env.js' )().asObject()
 var Server = require( '../server.js' )
 var routes = require( '../routes.js' )( env.routes )
 
-// { operation, formFields: { key, value } }
-//   => { method, url, headers: { 'Content-Type', 'Content-Length', Referer } }
-var baseRequestOptions = function ( options ) {
-  var boundary = '--boundary'
-  var operation = options.operation
-  var formData = options.formFields
-    .concat( [ { key: 'honeypot', value: '' } ] )
-    .map( keyValueToFormData )
-    .concat( [ '--' + boundary + '--\r\n' ] )
-    .join( '' )
+var submitFormRequest = require( './request-options.js' ).submitForm
 
-  return  {
-    method: 'POST',
-    url: `http://localhost:${ env.server.port }/firebase-user/${ operation }/`,
-    headers: {
-      'Content-Type': `multipart/form-data; boundary=${ boundary }`,
-      'Content-Length': formData.length,
-      'Referer': `http://localhost:${ env.server.port }/firebase-user/${ operation }/`,
-    },
-    body: formData,
-  }
-
-  function keyValueToFormData ( keyValue ) {
-    return '--' + boundary + '\r\n' +
-      'Content-Disposition: form-data; name="' + keyValue.key + '"\r\n' +
-      '\r\n' +
-      keyValue.value + '\r\n'
-  }
-}
-
+// set up server once, then close it at the end
 var server
 
 test( 'start-server', function ( t ) {
@@ -52,14 +25,17 @@ test( 'start-server', function ( t ) {
 test( 'create-user', function ( t ) {
   t.plan( 2 )
 
-  var createRequestOptions = baseRequestOptions( {
-    operation: 'create',
+  var createRequestOptions = submitFormRequest( {
+    path: '/firebase-user/create/',
     formFields: [ {
       key: 'email',
       value: 'mgdevelopers+automated-test-creation@risd.edu',
     }, {
       key: 'password',
       value: 'password!',
+    }, {
+      key: 'honey_pot',
+      value: ''
     } ],
   } )
 
@@ -73,14 +49,20 @@ test( 'create-user', function ( t ) {
 test( 'update-user', function ( t ) {
   t.plan( 2 )
 
-  var updateRequestOptions = baseRequestOptions( {
-    operation: 'update',
+  var updateRequestOptions = submitFormRequest( {
+    path: '/firebase-user/update/',
     formFields: [ {
       key: 'email',
       value: 'mgdevelopers+automated-test-creation@risd.edu'
     }, {
-      key: 'password',
+      key: 'oldPassword',
+      value: 'password!',
+    }, {
+      key: 'newPassword',
       value: 'password!1',
+    }, {
+      key: 'honeypot',
+      value: ''
     } ],
   } )
 
@@ -94,11 +76,17 @@ test( 'update-user', function ( t ) {
 test( 'delete-user', function ( t ) {
   t.plan( 2 )
 
-  var deleteRequestOptions = baseRequestOptions( {
-    operation: 'update',
+  var deleteRequestOptions = submitFormRequest( {
+    path: '/firebase-user/delete/',
     formFields: [ {
       key: 'email',
       value: 'mgdevelopers+automated-test-creation@risd.edu'
+    }, {
+      key: 'password',
+      value: 'password!1',
+    }, {
+      key: 'honeypot',
+      value: ''
     } ],
   } )
 

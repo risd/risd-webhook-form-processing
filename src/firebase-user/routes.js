@@ -12,6 +12,7 @@ module.exports = FirebaseUserRoutes
  * @param {object} options
  * @param {string} options.project      name of the project
  * @param {string} options.credential  certificate for the project
+ * @param {string} options.apiKey.     web api key for the project
  */
 function FirebaseUserRoutes ( options ) {
   if ( ! ( this instanceof FirebaseUserRoutes ) ) return new FirebaseUserRoutes( options )
@@ -29,7 +30,7 @@ function FirebaseUserRoutes ( options ) {
     } ),
     update: baseUserRoute( {
       validationPipeline: [
-        validateFieldsHaveValue( [ 'email', 'newPassword' ] ),
+        validateFieldsHaveValue( [ 'email', 'oldPassword', 'newPassword' ] ),
       ],
       postValidationPipeline: [
         updateUser(),
@@ -37,7 +38,7 @@ function FirebaseUserRoutes ( options ) {
     } ),
     delete: baseUserRoute( {
       validationPipeline: [
-        validateFieldsHaveValue( [ 'email' ] ),
+        validateFieldsHaveValue( [ 'email', 'password' ] ),
       ],
       postValidationPipeline: [
         deleteUser(),

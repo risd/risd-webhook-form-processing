@@ -2,19 +2,24 @@ var test = require( 'tape' )
 var request = require( 'request' )
 var env = require( '../env.js' )()
 var configuration = env.asObject()
-var requestOptions = require( './request-options' )
 
 var env = require( '../env.js' )().asObject()
 var Server = require( '../server.js' )
 var routes = require( '../routes.js' )( env.routes )
+
+var submitFormRequest = require( './request-options.js' ).submitForm
 
 test( 'error-request', function ( t ) {
   t.plan( 3 )
 
   var server = Server( Object.assign( { routes: routes }, env.server ) )
 
-  requestOptions = Object.assign( {}, requestOptions, {
-    url: `http://localhost:${ configuration.server.port }/no-such-route/`
+  var requestOptions = submitFormRequest( {
+    path: '/no-such-route/',
+    formFields: [ {
+      key: 'honey_pot',
+      value: '',
+    } ],
   } )
 
   request( requestOptions, function ( error, response ) {
