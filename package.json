@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^3.2.2",
     "debug": "^3.1.0",
     "dotenv-safe": "^6.0.0",
     "firebase": "^8.7.1",
